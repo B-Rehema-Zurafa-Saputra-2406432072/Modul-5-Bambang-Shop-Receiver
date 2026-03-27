@@ -65,8 +65,8 @@ You can install Postman via this website: https://www.postman.com/downloads/
     -   [x] Commit: `Create SubscriberRequest model struct.`
     -   [x] Commit: `Create Notification database and Notification repository struct skeleton.`
     -   [x] Commit: `Implement add function in Notification repository.`
-    -   [ ] Commit: `Implement list_all_as_string function in Notification repository.`
-    -   [ ] Write answers of your learning module's "Reflection Subscriber-1" questions in this README.
+    -   [x] Commit: `Implement list_all_as_string function in Notification repository.`
+    -   [x] Write answers of your learning module's "Reflection Subscriber-1" questions in this README.
 -   **STAGE 3: Implement services and controllers**
     -   [ ] Commit: `Create Notification service struct skeleton.`
     -   [ ] Commit: `Implement subscribe function in Notification service.`
@@ -85,5 +85,8 @@ This is the place for you to write reflections:
 ### Mandatory (Subscriber) Reflections
 
 #### Reflection Subscriber-1
+Penggunaan RwLock diperlukan karena framework web Rocket berjalan secara multi-threaded. Jika hanya menggunakan Vec biasa, beberapa thread bisa saja mencoba menambah notifikasi ke dalam Vec pada saat yang sama, menyebabkan Data Race dan membuat program crash. Pemilihan RwLock (Read-Write Lock) dibandingkan Mutex (Mutual Exclusion) karena alasan optimisasi performa yang spesifik pada kasus penggunaan. Mutex hanya mengizinkan satu therad untuk mengakses data pada satu waktu tanpa melihat apakah thread ingin read atau write. Sementara, RwLock mengizinkan thread untuk membaca data secara bersamaan, jika tidak ada yang menulis. Namun, jika ada satu thread yang ingin menulis data, RwLock akan mengunci akses untuk semua thread lain. Dalam aplikasi notifikasi ini, orang yang melihat daftar notifikasi biasanya jauh lebih banyak dibandingkan notifikasi baru. Menggunakan RwLock membuat proses membaca read berjalan cepat, tanpa antrian seperti menggunakan Mutex.
+
+Perbedaan static antara Java dan Rust terjadi karena filosofi bahasa pemrograman tersebut yang berbeda. Java mengizinkan membuat variabel static yang mutable dan mengubahnya dari fungsi mana saja. Java memercayakan sepenuhnya kepada developer untuk mengatur synchronisasi. Jadi walaupun tidak melakukannya, Java masih akan melakukan kompilasi. Sementara Rust, ingin membuat aturan bahwa kalau bisa dikompilasi, maka tidak ada data race. Memiliki variabel global yang bisa diubah oleh banyak thread merupakan hal yang tidak aman untuk data race, sehingga rust tidak memperbolehkan static variable yang mutable. Selain itu, variable static harus diketahui pasti ukuran dan nilai awalnya. lazy_static! memecahkan kedua masalah diatas dengan menunda (lazy) pembuatan Vec atau DashMap tersebut sampai detik pertama variabel tersebut dipanggil saat aplikasi berjalan (runtime), dan secara otomatis membungkusnya dengan pengaman thread-safe sehingga compiler Rust memperbolehkannya.
 
 #### Reflection Subscriber-2
