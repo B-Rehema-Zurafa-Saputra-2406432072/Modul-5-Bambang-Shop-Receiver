@@ -77,7 +77,7 @@ You can install Postman via this website: https://www.postman.com/downloads/
     -   [x] Commit: `Implement receive function in Notification controller.`
     -   [x] Commit: `Implement list_messages function in Notification service.`
     -   [x] Commit: `Implement list function in Notification controller.`
-    -   [ ] Write answers of your learning module's "Reflection Subscriber-2" questions in this README.
+    -   [x] Write answers of your learning module's "Reflection Subscriber-2" questions in this README.
 
 ## Your Reflections
 This is the place for you to write reflections:
@@ -90,3 +90,8 @@ Penggunaan RwLock diperlukan karena framework web Rocket berjalan secara multi-t
 Perbedaan static antara Java dan Rust terjadi karena filosofi bahasa pemrograman tersebut yang berbeda. Java mengizinkan membuat variabel static yang mutable dan mengubahnya dari fungsi mana saja. Java memercayakan sepenuhnya kepada developer untuk mengatur synchronisasi. Jadi walaupun tidak melakukannya, Java masih akan melakukan kompilasi. Sementara Rust, ingin membuat aturan bahwa kalau bisa dikompilasi, maka tidak ada data race. Memiliki variabel global yang bisa diubah oleh banyak thread merupakan hal yang tidak aman untuk data race, sehingga rust tidak memperbolehkan static variable yang mutable. Selain itu, variable static harus diketahui pasti ukuran dan nilai awalnya. lazy_static! memecahkan kedua masalah diatas dengan menunda (lazy) pembuatan Vec atau DashMap tersebut sampai detik pertama variabel tersebut dipanggil saat aplikasi berjalan (runtime), dan secara otomatis membungkusnya dengan pengaman thread-safe sehingga compiler Rust memperbolehkannya.
 
 #### Reflection Subscriber-2
+Mengeksplorisasi src/lib.rs penting karena memiliki beberapa komponen penting. Terdapat komponen config seperti APP_CONFIG, REQWEST_CLIENT, serta abstraksi error_response. lib.rs dapat digunakan sebagai tempat sentral konfigurasi dan tempat penyimpanan logika dasar yang dapat digunakan berulang kali.
+
+Observer pattern memudahkan penambahan subsriber karena sistem yang didesign bersifat loosely coupled. Saat menjalankan beberapa receiver sekaligus, tidak perlu ada perubahan baris kode di main app. Jadi tinggal memanggil endpoint /subscribe, dan sistem akan langsung bekerja. Untuk penambahan Main App lebih menantang. Karena status subscriber sekarang disimpan di DashMap main app. Jika seseorang subscriber terdaftar di Main App 1 tidak akan mendapatkan notifikasi baru jika produk ditambah di Main APp 2. Untuk memudahkan penambahan Main app. diperlukan shared database untuk semua instance Main App.
+
+Saya sendiri belum pernah membuat Unit Test atau bermain dengan documentation Postman, namun saya menyadari bagaimana kedua hal tersebut merupakan hal yang penting. Unit Tests berfungsi untuk mengautomasikan testing API seperti menulis tes untuk fungsi format pada Notification untuk memastikan bahwa pesan yang sampai ke user tidaak berantakan. Selain itu, dokumentasi yang rapi dapat membantu dalam group project agar tidak perlu menebak tipe data apa yang harus dikurangi. Ini akan membuat pengembangan Backend dan Frontend lebih mulus. 
